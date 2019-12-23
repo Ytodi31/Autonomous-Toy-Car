@@ -1,0 +1,29 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"chassis" [label="chassis"];
+"imu_link" [label="imu_link"];
+"base_laser" [label="base_laser"];
+"left_frontaxis" [label="left_frontaxis"];
+"Frontleftwheel" [label="Frontleftwheel"];
+"rearwheels" [label="rearwheels"];
+"right_frontaxis" [label="right_frontaxis"];
+"Frontrightwheel" [label="Frontrightwheel"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "dummy_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"dummy_joint" -> "chassis"
+"chassis" -> "imu_joint" [label="xyz: 0.03 0.6 0.15 \nrpy: 0 -0 0"]
+"imu_joint" -> "imu_link"
+"chassis" -> "laser_joint" [label="xyz: 0.03 0.6 0.25 \nrpy: 0 0 -1.57"]
+"laser_joint" -> "base_laser"
+"chassis" -> "left_frontaxisjoint" [label="xyz: 0.177035 0.0120987 0.193482 \nrpy: -1.51998 1.56358 1.5708"]
+"left_frontaxisjoint" -> "left_frontaxis"
+"left_frontaxis" -> "FrontLeftWheelJoint" [label="xyz: 0.0948371 0.0127201 0 \nrpy: 0 -0 1.6964"]
+"FrontLeftWheelJoint" -> "Frontleftwheel"
+"chassis" -> "rearwheelsjoints" [label="xyz: 0.0201777 0.601562 0.098944 \nrpy: -2.47268 0.000241655 -0.0334899"]
+"rearwheelsjoints" -> "rearwheels"
+"chassis" -> "right_frontaxisjoint" [label="xyz: -0.166859 -0.00113084 0.193387 \nrpy: 1.62161 1.56358 1.5708"]
+"right_frontaxisjoint" -> "right_frontaxis"
+"right_frontaxis" -> "FrontRightWheelJoint" [label="xyz: 0.0948371 0.0127201 0 \nrpy: 0 0 -1.93864"]
+"FrontRightWheelJoint" -> "Frontrightwheel"
+}
