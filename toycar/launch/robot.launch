@@ -1,0 +1,55 @@
+<launch>
+        <param name="robot_description"
+              textfile="$(find toycar)/urdf/toycar.urdf" />
+
+        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+          <arg name="world_name" value="$(find toycar)/world/maze.world"/>
+        </include>
+
+        <arg name="paused"
+          default="false"/>
+        <arg name="use_sim_time"
+          default="true"/>
+        <arg name="gui"
+          default="true"/>
+        <arg name="headless"
+          default="false"/>
+        <arg name="debug"
+          default="false"/>
+
+        <node
+            name="spawn_model"
+            pkg="gazebo_ros"
+            type="spawn_model"
+            args="-file $(find toycar)/urdf/toycar.urdf -urdf -model toycar"
+            output="screen"/>
+
+        <node
+          name="fake_joint_calibration"
+          pkg="rostopic"
+          type="rostopic"
+          args="pub /calibrated std_msgs/Bool true"/>
+
+        <node
+          name ="toycar_publisher"
+          pkg = "toycar"
+          type = "toycar_publisher"/>
+
+          <node
+            pkg="tf"
+            type="static_transform_publisher"
+            name="t1"
+            args="0 0 0 0 0 0 map base_link 1000" />
+          <node
+            pkg="tf"
+             type="static_transform_publisher"
+             name="base_to_laser_broadcaster"
+             args="0 0 0 0 0 0 base_link chassis 1000" />
+          <node
+            pkg="tf"
+            type="static_transform_publisher"
+            name="base"
+            args="0.03 0.6 0.25 -1.57 0 0 chassis base_laser 1000" />
+
+        <node pkg="rviz" type="rviz" name="rviz"/>
+</launch>
