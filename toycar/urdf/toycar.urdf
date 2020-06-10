@@ -409,7 +409,7 @@
 
   <link name="base_laser">
     <inertial>
-      <origin xyz="-0.00029774 0.0066667 0.00013047" rpy="0 0 0" />
+      <origin xyz="-0.00029774 0.0066667 0.00013047" rpy="0 0 -1.57" />
       <mass value="0.15717" />
       <inertia ixx="6.7885E-05" ixy="-1.3987E-07" ixz="-8.1554E-07"
         iyy="0.00013173" iyz="-9.0932E-08" izz="7.1972E-05" />
@@ -499,7 +499,7 @@
   </link>
 
   <joint name="imu_joint" type="fixed">
-    <origin xyz="0.03 0.6 0.15" rpy = "0 0 0"/>
+    <origin xyz="0.03 0.6 0.25" rpy = "0 0 0"/>
     <parent link="chassis"/>
     <child link="imu_link"/>
     <axis xyz="0 0 1"/>
@@ -528,11 +528,11 @@
     <sensor type="ray" name="ydlidar">
     <pose>0 0 0 0 0 0</pose>
     <visualize>true</visualize>
-    <update_rate>100</update_rate>
+    <update_rate>50</update_rate>
     <ray>
       <scan>
         <horizontal>
-          <samples>840</samples>
+          <samples>720</samples>
           <resolution>1</resolution>
           <min_angle>-1.57</min_angle>
           <max_angle>1.57</max_angle>
@@ -541,7 +541,7 @@
       <range>
         <min>0.10</min>
         <max>10.0</max>
-        <resolution>1</resolution>
+        <resolution>0.01</resolution>
       </range>
       <noise>
         <type>gaussian</type>
