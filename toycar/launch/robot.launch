@@ -1,9 +1,15 @@
 <launch>
         <param name="robot_description"
               textfile="$(find toycar)/urdf/toycar.urdf" />
+              <arg name="x" default="1"/>
+              <arg name="y" default="1"/>
+              <arg name="z" default="0.0"/>
+              <arg name="roll" default="0"/>
+              <arg name="pitch" default="0"/>
+              <arg name="yaw" default="0"/>
 
         <include file="$(find gazebo_ros)/launch/empty_world.launch">
-          <arg name="world_name" value="$(find toycar)/world/maze.world"/>
+          <arg name="world_name" value="$(find toycar)/world/home.world"/>
         </include>
 
         <arg name="paused"
@@ -21,7 +27,9 @@
             name="spawn_model"
             pkg="gazebo_ros"
             type="spawn_model"
-            args="-file $(find toycar)/urdf/toycar.urdf -urdf -model toycar"
+            args="-file $(find toycar)/urdf/toycar.urdf -urdf -model toycar
+                -x $(arg x) -y $(arg y) -z $(arg z)
+               -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"
             output="screen"/>
 
         <node
@@ -30,10 +38,10 @@
           type="rostopic"
           args="pub /calibrated std_msgs/Bool true"/>
 
-        <node
+        <!-- <node
           name ="toycar_publisher"
           pkg = "toycar"
-          type = "toycar_publisher"/>
+          type = "toycar_publisher"/> -->
 
           <node
             pkg="tf"
@@ -49,7 +57,11 @@
             pkg="tf"
             type="static_transform_publisher"
             name="base"
-            args="0.03 0.6 0.25 -1.57 0 0 chassis base_laser 1000" />
+            args="0.03 0.6 0.25 1.57 0 0 chassis base_laser 1000" />
 
         <node pkg="rviz" type="rviz" name="rviz"/>
+
+        <include file="$(find toycar)/launch/odom.launch"/>
+
+        <include file="$(find toycar_controller)/launch/toycar_controller.launch"/>
 </launch>
