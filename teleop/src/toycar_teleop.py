@@ -111,10 +111,11 @@ if __name__=="__main__":
         settings = termios.tcgetattr(sys.stdin)
 
     rospy.init_node("toycar_teleop")
-    leftwheel_vel = rospy.Publisher("/toycar/leftwheel_velocity_controller/command", Float64, queue_size = 100)
-    rightwheel_vel = rospy.Publisher("/toycar/rightwheel_velocity_controller/command", Float64, queue_size = 100)
-    left_steer = rospy.Publisher("/toycar/leftjoint_position_controller/command", Float64, queue_size = 100)
-    right_steer = rospy.Publisher("/toycar/rightjoint_position_controller/command", Float64, queue_size = 100)
+    teleop_publisher = rospy.Publisher("/cmd_vel", Twist, queue_size=100 )
+    # leftwheel_vel = rospy.Publisher("/toycar/leftwheel_velocity_controller/command", Float64, queue_size = 100)
+    # rightwheel_vel = rospy.Publisher("/toycar/rightwheel_velocity_controller/command", Float64, queue_size = 100)
+    # left_steer = rospy.Publisher("/toycar/leftjoint_position_controller/command", Float64, queue_size = 100)
+    # right_steer = rospy.Publisher("/toycar/rightjoint_position_controller/command", Float64, queue_size = 100)
 
     status = 0
     target_linear_vel   = 0.0
@@ -123,7 +124,7 @@ if __name__=="__main__":
     control_angular_pos = 0.0
 
     velocity = Float64(0)
-
+    teleop_msg = Twist()
     try:
         print(msg)
         while(1):
@@ -158,24 +159,30 @@ if __name__=="__main__":
             # twist = Twist()
 
             control_linear_vel = makeSimpleProfile(control_linear_vel, target_linear_vel, (LIN_VEL_STEP_SIZE/2.0))
-            velocity = Float64(control_linear_vel)
+            # velocity = Float64(control_linear_vel)
 
             control_angular_pos = makeSimpleProfile(control_angular_pos, target_angular_pos, (ANG_POS_STEP_SIZE/2.0))
-            steer_angle = Float64(control_angular_pos)
+            # steer_angle = Float64(control_angular_pos)
 
-            leftwheel_vel.publish(velocity)
-            rightwheel_vel.publish(velocity)
-            left_steer.publish(steer_angle)
-            right_steer.publish(steer_angle)
+            teleop_msg.linear.x = control_linear_vel
+            teleop_msg.angular.z = control_angular_pos
+            teleop_publisher.publish(teleop_msg)
+            # leftwheel_vel.publish(velocity)
+            # rightwheel_vel.publish(velocity)
+            # left_steer.publish(steer_angle)
+            # right_steer.publish(steer_angle)
 
 
     except:
         print(e)
 
     finally:
-        velocity.data = 0
-        leftwheel_vel.publish(velocity)
-        rightwheel_vel.publish(velocity)
+        # velocity.data = 0
+        # leftwheel_vel.publish(velocity)
+        # rightwheel_vel.publish(velocity)
+        teleop_msg.linear.x = 0
+        teleop_msg.angular.z = 0
+        teleop_publisher.publish(teleop_msg)
 
     if os.name != 'nt':
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
